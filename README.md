@@ -11,6 +11,30 @@ The application use:
  
 ![Overview](./docs/springboot_demo.png)
 
+The demo is about an enterprise greetings application that have 2 microservices, a frontend and 
+a backend. The frontend expose an api of the following url:
+```shell
+http://localhost:8080/greeting?name=XYZ
+```
+And just respond with:
+```json
+{"id":362,"content":"Bonjure, XYZ!"}
+```
+or
+```json
+{"id":362,"content":"Hello, XYZ!"}
+```
+The id is just the sequence of calls, and used as our greetings id. In the logs and traces are
+the business logic around greetings injected as:
+- greetingStatus
+- greetingsId	
+- greetingsLanguage
+- greetingsName
+
+The service is not very reliable, so you will find a high amount of problems in logs and traces.
+And there is metrics that counts the number of greetings for both service, both totally and
+the errors.
+
 My goals are to show:
 - Structured logs with json based layout output.
 - Minimal logging, instead using tracing in combination with logs, and just have log entry in the "end" of a "session" - either okay or catch exception and log failure
@@ -86,7 +110,25 @@ wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases
 # Download the opentelemetry java agent
 wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.19.2/opentelemetry-javaagent.jar
 
-# Build and package
+# Build and package the backend
+cd backend
+./mvnw clean package
+
+# Endpoint to the otel collector
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+export OTEL_METRIC_EXPORT_INTERVAL=15000
+
+# Set the service name used on spans, for metrics this will be mapped to job
+export OTEL_SERVICE_NAME=myBackendservice
+# These resources attributes will be added to all trace spans and to a timeseries named target_info
+# target_info can be used to promql join on the label job
+export OTEL_RESOURCE_ATTRIBUTES=service.version=0.1.0, application=myBackendservice
+
+java -javaagent:./opentelemetry-javaagent.jar -jar ./target/rest-backend-complete-0.0.1-SNAPSHOT.jar
+
+# In another window
+# Build and package the frontend
+cd frontend
 ./mvnw clean package
 
 # Endpoint to the otel collector
@@ -99,7 +141,7 @@ export OTEL_SERVICE_NAME=myWebservice
 # target_info can be used to promql join on the label job
 export OTEL_RESOURCE_ATTRIBUTES=service.version=0.1.0, application=myWebservice
 
-java -javaagent:./opentelemetry-javaagent.jar -jar ./target/rest-service-complete-0.0.1-SNAPSHOT.jar
+java -javaagent:./opentelemetry-javaagent.jar -jar ./target/rest-frontend-complete-0.0.1-SNAPSHOT.jar
 
 # In another window
 otelcol-contrib --config=otel_conf.yml
