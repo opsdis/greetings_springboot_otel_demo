@@ -128,7 +128,8 @@ as the one that exists.
 ![Loki datasource setup](./docs/loki_datasource.png)
 
 It's in the section `Derived fields` the magic happen of mapping the trace id field in the log to
-the Tempo data source.
+the Tempo data source. 
+> Internal link should point to the tempo datasource.
 
 
 In the directory `grafana/dashboards` there are two simple dashboards that can be imported to show some
