@@ -3,12 +3,13 @@ A demo of Springboot with Opentelemetry
 
 # Overview
 This is a small demo application based on Springboot. 
-The purpose with demo is to show the capabilities of using Springboot with
-Opentelemetry.
+The purpose with demo is to show the capabilities of using Springboot with Opentelemetry.
 The application use:
 - Springboot micrometer for metrics
 - Springboot sleuth for tracing that include the opentelemetry sdk
 - Spingboot logback for logging configuration
+ 
+![Overview](./docs/springboot_demo.png)
 
 My goals are to show:
 - Structured logs with json based layout output.
@@ -20,13 +21,15 @@ My goals are to show:
 - Otel collector configuration - receivers. processors and exporters, especially what you can do with processors
 - Visualize it all in grafana, so you can navigate between metrics, logs and traces 
 
+![Logs to traces](./docs/explore_logs_to_traces.png)
+
 # Todo
 - Metrics with exemplars not implemented
 - Native otel logging - currently to file and scraped by receiver `filelog`
 - Add more micro services
 
 # Design goals
-Move as much meta data information as possible to the otel collector and try to separate between 
+Move as much metadata information as possible to the otel collector and try to separate between 
 what is application specific and what is infrastructure and environment specific.
 
 Using the opentelemetry agent in the jvm traces and metrics are pushed according to the agent
@@ -64,7 +67,7 @@ The otel collector will send the observability data to the following:
 - Logs -> Loki
 - Traces -> Tempo
 
-If you like to make it easy just setup a Grafana Cloud free account and start testing.
+If you like to make it easy just set up a Grafana Cloud free account and start testing.
 
 ```shell
 cp otel_conf_example.yml otel_conf.yml
@@ -114,7 +117,24 @@ more configuration options.
 
 # Setup Grafana
 
+To enable correlation between logs and traces and vice verse you need to create additional information
+to your data sources. 
+> In grafana cloud you can not change the existing so just create new ones but pointing to the 
+> endpoints you current datasources have. You must also create your own api keys.
 
+For logs (Loki) create a datasource named `Loki-spring-to-traces` with the same endpoint and username
+as the one that exists. 
+
+![Loki datasource setup](./docs/loki_datasource.png)
+
+It's in the section `Derived fields` the magic happen of mapping the trace id field in the log to
+the Tempo data source.
+
+
+In the directory `grafana/dashboards` there are two simple dashboards that can be imported to show some
+application related dashboard and some jvm metrics.
+
+![Application](./docs/application_dashboard.png)
 
 # Links
 otel contrib collector - https://github.com/open-telemetry/opentelemetry-collector-contrib/releases
