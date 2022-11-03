@@ -35,12 +35,18 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.2.3-046dbf9789"
+      "version": "9.2.3-997144b7"
     },
     {
       "type": "panel",
       "id": "graph",
       "name": "Graph (old)",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
       "version": ""
     },
     {
@@ -170,7 +176,7 @@
           }
         ]
       },
-      "pluginVersion": "9.2.3-046dbf9789",
+      "pluginVersion": "9.2.3-997144b7",
       "targets": [
         {
           "datasource": {
@@ -270,7 +276,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.3-046dbf9789",
+      "pluginVersion": "9.2.3-997144b7",
       "targets": [
         {
           "datasource": {
@@ -476,7 +482,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.2.3-046dbf9789",
+      "pluginVersion": "9.2.3-997144b7",
       "targets": [
         {
           "datasource": {
@@ -543,7 +549,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.2.3-046dbf9789",
+      "pluginVersion": "9.2.3-997144b7",
       "targets": [
         {
           "datasource": {
@@ -671,161 +677,6 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI-SPRING-TO-TRACES}"
-      },
-      "description": "",
-      "gridPos": {
-        "h": 13,
-        "w": 12,
-        "x": 12,
-        "y": 8
-      },
-      "id": 12,
-      "options": {
-        "dedupStrategy": "none",
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": false,
-        "showLabels": false,
-        "showTime": false,
-        "sortOrder": "Descending",
-        "wrapLogMessage": false
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI-SPRING-TO-TRACES}"
-          },
-          "editorMode": "code",
-          "expr": "{pnx_itcard=\"0639\",pnx_system=\"springboot_otel_demo\"} |=  `ERROR` | json ",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "Error logs",
-      "type": "logs"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "id": 7,
-      "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true
-      },
-      "pluginVersion": "9.2.3-046dbf9789",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum by (le) (http_server_duration_bucket{job=\"$application\", instance=\"$instance\", http_status_code=\"200\"}) \n",
-          "format": "heatmap",
-          "hide": false,
-          "instant": false,
-          "interval": "",
-          "legendFormat": "{{le}}",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
-          },
-          "editorMode": "code",
-          "expr": "sum by (le) (rate(http_server_duration_bucket{application=\"$application\", instance=\"$instance\", http_status_code=\"200\"}[5m]))\n",
-          "hide": true,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Request duration histogram (ms)",
-      "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI-SPRING-TO-TRACES}"
-      },
-      "description": "",
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 21
-      },
-      "id": 16,
-      "options": {
-        "dedupStrategy": "numbers",
-        "enableLogDetails": true,
-        "prettifyLogMessage": false,
-        "showCommonLabels": true,
-        "showLabels": false,
-        "showTime": false,
-        "sortOrder": "Descending",
-        "wrapLogMessage": false
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI-SPRING-TO-TRACES}"
-          },
-          "editorMode": "code",
-          "expr": "{pnx_itcard=\"0639\",pnx_system=\"springboot_otel_demo\"} |= `ERROR` | json | line_format `{{._timestamp}} {{.stack_trace}} ` | pattern `<stack>|<stack_source>|<_>` | line_format `{{.stack}} {{.stack_source}}`",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "title": "Stack traces",
-      "type": "logs"
-    },
-    {
       "aliasColors": {
         "HTTP": "#890f02",
         "HTTP - 5xx": "#bf1b00"
@@ -842,8 +693,8 @@
       "gridPos": {
         "h": 6,
         "w": 12,
-        "x": 0,
-        "y": 25
+        "x": 12,
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 6,
@@ -864,7 +715,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.2.3-046dbf9789",
+      "pluginVersion": "9.2.3-997144b7",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -945,6 +796,255 @@
       "yaxis": {
         "align": false
       }
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI-SPRING-TO-TRACES}"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 12,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI-SPRING-TO-TRACES}"
+          },
+          "editorMode": "code",
+          "expr": "{pnx_itcard=\"0639\",pnx_system=\"springboot_otel_demo\"} |=  `ERROR` | json ",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Error logs",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.2.3-997144b7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum by (le) (http_server_duration_bucket{job=\"$application\", instance=\"$instance\", http_status_code=\"200\"}) \n",
+          "format": "heatmap",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{le}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (le) (rate(http_server_duration_bucket{application=\"$application\", instance=\"$instance\", http_status_code=\"200\"}[5m]))\n",
+          "hide": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Request duration histogram (ms)",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "id": 18,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "show": true,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false
+        }
+      },
+      "pluginVersion": "9.2.3-997144b7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(increase(http_server_duration_bucket{job=\"$application\", instance=\"$instance\", http_status_code=\"200\"} [$__interval])) by (le) \n",
+          "format": "heatmap",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{le}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (le) (rate(http_server_duration_bucket{application=\"$application\", instance=\"$instance\", http_status_code=\"200\"}[5m]))\n",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Request duration histogram (ms)",
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI-SPRING-TO-TRACES}"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "id": 16,
+      "options": {
+        "dedupStrategy": "numbers",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": true,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI-SPRING-TO-TRACES}"
+          },
+          "editorMode": "code",
+          "expr": "{pnx_itcard=\"0639\",pnx_system=\"springboot_otel_demo\"} |= `ERROR` | json | line_format `{{._timestamp}} {{.stack_trace}} ` | pattern `<stack>|<stack_source>|<_>` | line_format `{{.stack}} {{.stack_source}}`",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Stack traces",
+      "type": "logs"
     }
   ],
   "refresh": "30s",
@@ -1009,6 +1109,6 @@
   "timezone": "",
   "title": "Application",
   "uid": "grKZ1yHVk",
-  "version": 30,
+  "version": 31,
   "weekStart": ""
 }
