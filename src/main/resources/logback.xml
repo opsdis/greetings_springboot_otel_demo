@@ -1,0 +1,25 @@
+<configuration>
+    <appender name="jsonFileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>/var/tmp/logback_demo.log</file>
+        <append>true</append>
+        <!-- set immediateFlush to false for much higher logging throughput -->
+        <immediateFlush>false</immediateFlush>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Use customFields to get the key/values on every log line -->
+            <customFields>{"application":"myWebservice","buildinfo":"Version 0.1.0-SNAPSHOT"}</customFields>
+            <!--<customFields>{"service_name":"myWebservice","buildinfo":"Version 0.1.0-SNAPSHOT","pnx_itcard":"0639","pnx_system":"springboot_otel_demo"}</customFields>-->
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <shortenedClassNameLength>5</shortenedClassNameLength>
+                <lineSeparator>|</lineSeparator>
+                <rootCauseFirst>false</rootCauseFirst>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
+
+    <root level="DEBUG">
+        <appender-ref ref="jsonFileAppender"/>
+    </root>
+</configuration>

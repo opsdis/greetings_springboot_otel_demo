@@ -1,0 +1,99 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+  filelog:
+    include: [ /var/tmp/logback_demo.log ]
+
+    attributes:
+      - pnx_itcard: "0639"
+      - pnx_system: "springboot_otel_demo"
+
+
+processors:
+  batch:
+  metricstransform:
+    # transforms is a list of transformations with each element transforming a metric selected by metric name
+    transforms:
+      - include: .*
+        match_type: regexp
+        action: update
+        operations:
+          - action: add_label
+            new_label: instance
+            new_value: demo
+
+  filter/exclude:
+    logs:
+      # any logs matching filters are excluded from remainder of pipeline
+      exclude:
+        match_type: regexp
+        bodies:
+          - \"level\":\"DEBUG\"
+
+  attributes/metrics_traces:
+    actions:
+      - key: pnx_system
+        action: insert
+        value: "springboot_otel_demo"
+      - key: pnx_itcard
+        action: insert
+        value: "0639"
+      - key: instance
+        action: insert
+        value: "demo"
+
+  resource/traces:
+    attributes:
+      - key: pnx_system
+        action: insert
+        value: "springboot_otel_demo"
+      - key: pnx_itcard
+        action: insert
+        value: "0639"
+
+
+exporters:
+  prometheus:
+    endpoint: "localhost:8889"
+
+  prometheusremotewrite:
+    endpoint: "https://<username:password@<your mimir endpoint>"
+
+  loki:
+    endpoint: "https://<username:password>@<your loki endpoint>"
+    labels:
+      attributes:
+        #severity:
+        log.file.name: "filename"
+        pnx_system:
+        pnx_itcard:
+
+  otlp/1:
+    endpoint: <your tempo endpoint>>
+    headers:
+      authorization: Basic <base64 username:password>
+
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
+
+    metrics/1:
+      receivers: [ otlp ]
+      processors: [ batch, attributes/metrics_traces ]
+      exporters: [ prometheusremotewrite ]
+
+    logs:
+      receivers: [ filelog ]
+      processors: [ batch, filter/exclude ]
+      exporters: [ loki ]
+
+    traces:
+      receivers: [ otlp ]
+      processors: [ batch, attributes/metrics_traces ]
+      exporters: [ otlp/1 ]
