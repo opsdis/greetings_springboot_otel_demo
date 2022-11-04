@@ -130,7 +130,7 @@ public class GreetingController {
 
         Double rand = Math.random();
         if (rand < 0.01) {
-            MDC.put("greetingsLanguage", "chines");
+            MDC.put("greetingsLanguage", "chinese");
             childSpan.setAttribute("greetingsLanguage", MDC.get("greetingsLanguage"));
             throw new ClassNotFoundException("Langauge not supported");
         } else if (rand > 0.3) {
@@ -139,7 +139,7 @@ public class GreetingController {
             return new Greeting(counter.get(), String.format(TEMPLATE_1, name));
         }
 
-        MDC.put("greetingsLanguage", "france");
+        MDC.put("greetingsLanguage", "french");
         childSpan.setAttribute("greetingsLanguage", MDC.get("greetingsLanguage"));
         return new Greeting(counter.get(), String.format(TEMPLATE_2, name));
 
