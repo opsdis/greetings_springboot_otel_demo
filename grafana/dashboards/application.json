@@ -497,7 +497,7 @@
           "refId": "B"
         }
       ],
-      "title": "Requests",
+      "title": "Greetings ",
       "type": "gauge"
     },
     {
@@ -557,21 +557,6 @@
             "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
           },
           "editorMode": "code",
-          "exemplar": false,
-          "expr": "(rate(greetings_total[5m]) - rate(greetings_error[5m]) )/ rate(greetings_total[5m])",
-          "format": "time_series",
-          "hide": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_GRAFANACLOUD-PN0625TEST01-PROM}"
-          },
-          "editorMode": "code",
           "expr": "(sum (rate(greetings_error{application=\"$application\", instance=\"$instance\"}[5m]))) /  (sum (rate(greetings_total{application=\"$application\", instance=\"$instance\"}[5m]))) or vector(0)",
           "hide": false,
           "legendFormat": "__auto",
@@ -579,7 +564,7 @@
           "refId": "B"
         }
       ],
-      "title": "Error ratio",
+      "title": "Greetings errors",
       "type": "gauge"
     },
     {
@@ -768,7 +753,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Errors",
+      "title": "Rate by http status",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1102,13 +1087,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Application",
   "uid": "grKZ1yHVk",
-  "version": 31,
+  "version": 33,
   "weekStart": ""
 }
