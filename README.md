@@ -112,6 +112,9 @@ wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releas
 
 # Build and package the backend
 cd backend
+export JAVA_HOME=$HOME/.jdks/openjdk-19.0.1/
+export PATH=$JAVA_HOME/bin:$PATH
+
 ./mvnw clean package
 
 # Endpoint to the otel collector
@@ -124,11 +127,13 @@ export OTEL_SERVICE_NAME=myBackendservice
 # target_info can be used to promql join on the label job
 export OTEL_RESOURCE_ATTRIBUTES=service.version=0.1.0, application=myBackendservice
 
-java -javaagent:./opentelemetry-javaagent.jar -jar ./target/rest-backend-complete-0.0.1-SNAPSHOT.jar
+java -javaagent:../otel/opentelemetry-javaagent.jar -jar ./target/rest-backend-complete-0.0.1-SNAPSHOT.jar
 
 # In another window
 # Build and package the frontend
 cd frontend
+export JAVA_HOME=$HOME/.jdks/openjdk-19.0.1/
+export PATH=$JAVA_HOME/bin:$PATH
 ./mvnw clean package
 
 # Endpoint to the otel collector
@@ -141,10 +146,14 @@ export OTEL_SERVICE_NAME=myWebservice
 # target_info can be used to promql join on the label job
 export OTEL_RESOURCE_ATTRIBUTES=service.version=0.1.0, application=myWebservice
 
-java -javaagent:./opentelemetry-javaagent.jar -jar ./target/rest-frontend-complete-0.0.1-SNAPSHOT.jar
+java -javaagent:../otel/opentelemetry-javaagent.jar -jar ./target/rest-frontend-complete-0.0.1-SNAPSHOT.jar
 
 # In another window
-otelcol-contrib --config=otel_conf.yml
+# local scrape
+./otelcol-contrib --config=conf_local.yml
+# remote 
+~/programs//bin/otelcol-contrib --config=conf_micro.yml
+
 
 # In another window
 while [ true ] ; do curl -i http://localhost:8080/greeting?name=Foo; sleep 1; done
